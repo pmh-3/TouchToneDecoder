@@ -1,0 +1,61 @@
+%touchToneDecoder.m
+%Peter Heitkemper
+%5-3-21
+
+clear all; 
+format compact;
+clc;
+
+% Change sample location to isolate each digit
+% 30,000 total samples/10 digits = 3,0000 samples per digit
+% Creating an array and looping through would be next step
+% Then writing a method to determine frequency peaks and calculate 
+% digits automatically. 
+sample = [27000,30000];
+
+[signal,samplerate]=audioread('PeterHeitkemper.wav',sample);
+t=0:1/samplerate:(length(signal)-1)/samplerate;
+
+
+% signal = signal(1:2500,1)
+% t = t(:,1:2500);
+
+    % Calculate Fast Fourier Transform of a Signal
+Y = fft(signal);
+L = length(Y);
+
+% Calculate the DC offset of the signal
+A0 = Y(1)/L;
+% Calculate Amplitude Spectra
+Amp2 = abs(Y/L); % Divide the L and find the magnitude
+Amp1 = 2*Amp2(2:L/2+1); % Parse the array and multiply by 2
+
+% Calculate Frequency Array
+freq = linspace(samplerate/L,samplerate/2,L/2);
+
+%Amplitude Spectra
+subplot(2,1,1)
+hold on
+stem(freq,Amp1) 
+xlabel('frequency (Hz.)')
+ylabel('Amplitude')
+grid on
+box on
+% Plot the zero line
+plot(t,(t.*0),'k')
+hold off
+
+subplot(2,1,2);
+hold on
+
+%Plot the superpositioned signal
+plot(t,signal,'k')
+
+xlabel('Samples ')
+ylabel('Signal')
+grid on
+box on
+% Plot the zero line
+plot(t,(t.*0),'k')
+hold off
+
